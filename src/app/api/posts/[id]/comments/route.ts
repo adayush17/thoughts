@@ -59,14 +59,24 @@ export async function POST(
   }
 }
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(req: NextRequest) {
   try {
+    const url = new URL(req.url);
+    const id = url.pathname.split("/")[5]; // or use regex to extract it
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "Post ID is missing" },
+        { status: 400 }
+      );
+    }
+
     const comments = await prisma.comment.findMany({
       where: {
-        postId: context.params.id,
+        postId: id,
       },
       include: {
         author: {

@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -35,7 +35,7 @@ export async function POST(
 }
 
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -48,12 +48,10 @@ export async function DELETE(
       );
     }
 
-    await prisma.like.delete({
+    await prisma.like.deleteMany({
       where: {
-        userId_postId: {
-          userId: session.user.id,
-          postId: params.id,
-        },
+        userId: session.user.id,
+        postId: params.id,
       },
     });
 

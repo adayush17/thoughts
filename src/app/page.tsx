@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function Home() {
   const posts = await prisma.post.findMany({
@@ -45,9 +46,11 @@ export default async function Home() {
                 </p>
                 <div className="flex items-center">
                   {post.author.image && (
-                    <img
+                    <Image
                       src={post.author.image}
                       alt={post.author.name || "Author"}
+                      width={32}
+                      height={32}
                       className="w-8 h-8 rounded-full mr-2"
                     />
                   )}

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -61,9 +62,11 @@ export default async function PostPage({ params }: PostPageProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {post.author.image && (
-              <img
+              <Image
                 src={post.author.image}
                 alt={post.author.name || "Author"}
+                width={48}
+                height={48}
                 className="w-12 h-12 rounded-full"
               />
             )}
@@ -94,8 +97,15 @@ export default async function PostPage({ params }: PostPageProps) {
 
       <CommentSection
         postId={post.id}
-        comments={post.comments}
-        user={session?.user}
+        comments={post.comments.map(comment => ({
+          ...comment,
+          createdAt: comment.createdAt.toISOString()
+        }))}
+        user={session?.user ? {
+          id: session.user.id,
+          name: session.user.name ?? null,
+          image: session.user.image ?? null
+        } : null}
       />
     </article>
   );

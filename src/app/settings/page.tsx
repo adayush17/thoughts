@@ -30,7 +30,11 @@ export default async function SettingsPage() {
     <div className="max-w-4xl mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Settings</h1>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <ProfileSettingsForm user={user} />
+        <ProfileSettingsForm user={{
+          ...user,
+          name: user.name ?? "",
+          email: user.email ?? ""
+        }} />
       </div>
     </div>
   );

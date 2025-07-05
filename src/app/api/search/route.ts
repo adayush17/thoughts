@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       mode: "insensitive" as const,
     };
 
-    const [posts, users, total] = await Promise.all([
+    const [posts, users, postCount, userCount] = await Promise.all([
       type !== "users"
         ? prisma.post.findMany({
             where: {
@@ -86,7 +86,8 @@ export async function GET(request: Request) {
             { content: searchQuery },
           ],
         } : undefined,
-      }) + prisma.user.count({
+      }),
+      prisma.user.count({
         where: type !== "posts" ? {
           OR: [
             { name: searchQuery },
@@ -95,6 +96,8 @@ export async function GET(request: Request) {
         } : undefined,
       }),
     ]);
+
+    const total = postCount + userCount;
 
     return NextResponse.json({
       posts,

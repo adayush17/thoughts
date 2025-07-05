@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
@@ -40,9 +41,11 @@ export default function Navbar() {
                   Sign out
                 </button>
                 {session.user?.image && (
-                  <img
+                  <Image
                     src={session.user.image}
                     alt={session.user.name || "User"}
+                    width={32}
+                    height={32}
                     className="h-8 w-8 rounded-full"
                   />
                 )}

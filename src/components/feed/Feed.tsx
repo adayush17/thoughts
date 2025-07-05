@@ -38,10 +38,11 @@ export default function Feed() {
     status,
   } = useInfiniteQuery({
     queryKey: ["posts", categoryId],
-    queryFn: ({ pageParam }) => fetchPosts({ pageParam, categoryId }),
-    getNextPageParam: (lastPage) => {
-      if (lastPage.hasMore) {
-        return lastPage.posts.length / 10 + 1;
+    queryFn: ({ pageParam }: { pageParam: number }) => fetchPosts({ pageParam, categoryId }),
+    getNextPageParam: (lastPage: unknown) => {
+      const page = lastPage as { hasMore?: boolean; posts?: unknown[] };
+      if (page.hasMore && page.posts) {
+        return page.posts.length / 10 + 1;
       }
       return undefined;
     },

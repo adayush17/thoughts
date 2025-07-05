@@ -59,15 +59,14 @@ export async function POST(
   }
 }
 
-//Added NextRequest
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const comments = await prisma.comment.findMany({
       where: {
-        postId: params.id,
+        postId: context.params.id,
       },
       include: {
         author: {
@@ -91,4 +90,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}

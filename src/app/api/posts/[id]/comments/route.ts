@@ -59,6 +59,7 @@ export async function POST(
   }
 }
 
+//Added NextRequest
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }

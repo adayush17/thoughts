@@ -1,10 +1,12 @@
+"use client";
+
 import { useSearchParams } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostCard from "@/components/posts/PostCard";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 
-async function fetchPosts({ pageParam = 1, categoryId }: any) {
+async function fetchPosts({ pageParam = 1, categoryId }: { pageParam?: number; categoryId?: string | null }) {
   const params = new URLSearchParams({
     page: pageParam.toString(),
     limit: "10",

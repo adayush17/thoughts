@@ -8,18 +8,16 @@ const commentSchema = z.object({
   content: z.string().min(1, "Comment cannot be empty"),
 });
 
+// POST /api/posts/[id]/comments
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
@@ -28,7 +26,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         content,
-        postId: params.id,
+        postId: context.params.id,
         authorId: session.user.id,
       },
       include: {
@@ -59,21 +57,15 @@ export async function POST(
   }
 }
 
-export async function GET(req: NextRequest) {
+// GET /api/posts/[id]/comments
+export async function GET(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const url = new URL(req.url);
-    const id = url.pathname.split("/")[5]; // or use regex to extract it
-
-    if (!id) {
-      return NextResponse.json(
-        { message: "Post ID is missing" },
-        { status: 400 }
-      );
-    }
-
     const comments = await prisma.comment.findMany({
       where: {
-        postId: id,
+        postId: context.params.id,
       },
       include: {
         author: {
